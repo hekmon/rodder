@@ -9,7 +9,7 @@ Leakless mod is disable because a lot of AVs detect it as malware. This only mea
 Every objects inherits from rod's original objects:
 
 * Every original methods are available
-* Special (new) helpers methods are added on top of it (check doc)
+* Special (new) helpers methods are added on top of them (check doc)
 
 ## Download
 
