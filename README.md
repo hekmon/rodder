@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/hekmon/rodder.svg)](https://pkg.go.dev/github.com/hekmon/rodder)
 
-Wrapper around [go-rod](https://github.com/go-rod/rod). It simplifies the boilerplating for creating a remote controlled browser with or without stealth mode, and provides helper methods to retreive the headers sent by the browser, and current cookies from the browser or the current page. This way you can easily setup a http client that mimics a real browser with a initialized cookie jar (for example passing a login page with cloudfare protection before scripting crawling or scraping).
+Wrapper around [go-rod](https://github.com/go-rod/rod). It simplifies the boilerplating for creating a remote controlled browser with or without stealth mode. In addition, it provides helper methods to retreive the headers sent by the browser and current cookies from the browser or the current page. This way you can easily setup a http client that mimics a real browser with a initialized cookie jar (for example passing a login page with cloudfare protection before scripting crawling or scraping).
 
 Leakless mod is disable because a lot of AVs detect it as malware. This only means you have to ensure to call `Close()` on the instanciated browser to properly close it.
 
@@ -43,9 +43,6 @@ func main() {
         panic(err)
     }
     profilDir := filepath.Join(userCacheDir, "project-roduserdata")
-    if err = os.MkdirAll(profilDir, 0755); err != nil {
-        panic(err)
-    }
 
     // Create and launch the browser (additional env can be nil)
     stealth := true // Activate all the necessary flags and JS injection on page to have anti-bot bypass
@@ -53,14 +50,14 @@ func main() {
     if err != nil {
         panic(err)
     }
-    defer browser.Close() // Important otherwise, some background chromium process will remains even with all page closed !
+    defer browser.Close() // IMPORTANT: otherwise some background chromium process will remain even with all pages are closed !
 
     // Create a stealth page (high level wrapper that inject rod JS stealth script at startup)
     page, err := browser.NewPage()
     if err != nil {
         panic(err)
     }
-    defer page.Close() // not necessary but good habbit (think closing the browser tab)
+    defer page.Close() // not necessary but good habit (think closing the browser tab)
 
     // Use rod as usual (perform login, pass cloudflare challenge, etc... the idea is the set all the needed cookies here)
     if err = page.Navigate("https://bot.sannysoft.com/"); err != nil {
@@ -69,7 +66,7 @@ func main() {
     if err = page.WaitStable(time.Second); err != nil {
         panic(err)
     }
-    time.Sleep(10 * time.Second) // give you the time to check the page within the open browser
+    time.Sleep(5 * time.Second) // give you the time to check the page within the open browser
 
     // Let's create a http client that mimics the browser (except the TLS fingerprinting!)
     //// Let's retreive the current browser headers fingerprint (it will open and close a new tab on the remote browser)
